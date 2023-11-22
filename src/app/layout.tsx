@@ -19,7 +19,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} bg-gradient-to-b from-[#333] to-[#222] text-white`}
       >
-        {children}
+        <div className="px-5">{children}</div>
       </body>
     </html>
   );
