@@ -5,7 +5,7 @@ import { IoMdBicycle } from 'react-icons/io';
 import type { FormSectionsType } from '../types';
 import { useState } from 'react';
 import FormButton from '@/app/components/FormButton';
-import Input from '@/app/components/Input';
+import Input from '@/app/LoginComponents/Input';
 import DirectionArrows from './DirectionArrows';
 import CategoryButton from '@/app/components/CategoryButton';
 import Button from '@/app/components/Button';

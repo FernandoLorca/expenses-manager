@@ -16,7 +16,7 @@ import { IoTriangleSharp } from 'react-icons/io5';
 import { redirect } from 'next/navigation';
 import GradinetTitle from '@/app/components/GradinetTitle';
 import IconButton from '@/app/components/IconButton';
-import Input from '@/app/components/Input';
+import Input from '@/app/LoginComponents/Input';
 import FormButton from '@/app/components/FormButton';
 
 export default function page(): JSX.Element {

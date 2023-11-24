@@ -3,7 +3,6 @@ interface InputProps {
   placeholder: string;
   inputName: string;
   inputValue: string;
-  isError: boolean;
   onChangeEvent: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -12,7 +11,6 @@ export default function Input({
   placeholder,
   inputName,
   inputValue,
-  isError = false,
   onChangeEvent,
 }: InputProps) {
   return (
@@ -22,9 +20,7 @@ export default function Input({
       name={inputName}
       value={inputValue}
       onChange={onChangeEvent}
-      className={`w-full rounded-sm bg-transparent p-3 focus:border-gray-300/0 focus:outline-none focus:ring-2 focus:ring-lime-400 ${
-        isError ? 'border border-rose-600' : 'border border-gray-300/70'
-      }`}
+      className={`w-full rounded-sm border border-gray-300/70 bg-transparent p-3 focus:border-gray-300/0 focus:outline-none focus:ring-2 focus:ring-lime-400`}
     />
   );
 }
