@@ -19,7 +19,7 @@ export default function Home(): JSX.Element {
           <OAuthSingIn icon={<FaFacebook />} text="Log in with Facebook" />
         </div>
         <div className="flex justify-center py-5">
-          <hr className="w-72" />
+          <hr className="w-72 opacity-50" />
         </div>
         <div className="mb-5 flex justify-center">
           <SignUpLogInSelector />

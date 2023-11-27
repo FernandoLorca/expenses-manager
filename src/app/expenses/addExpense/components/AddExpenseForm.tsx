@@ -4,7 +4,7 @@ import { FaBowlFood } from 'react-icons/fa6';
 import { IoMdBicycle } from 'react-icons/io';
 import type { FormSectionsType } from '../types';
 import { useState } from 'react';
-import FormButton from '@/app/components/FormButton';
+import FormButton from '@/app/LoginComponents/FormButton';
 import Input from '@/app/LoginComponents/Input';
 import DirectionArrows from './DirectionArrows';
 import CategoryButton from '@/app/components/CategoryButton';

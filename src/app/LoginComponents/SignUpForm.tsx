@@ -1,9 +1,11 @@
-import FormButton from '../components/FormButton';
-import { useSignUpInForm } from '../context/SignUpInForm/SignUpInFormProvider';
+import { useContext } from 'react';
+import { SignUpInFormContext } from '../context/SignUpInForm/SignUpInFormProvider';
+import FormButton from './FormButton';
 import Input from './Input';
 
 export default function SignUpForm() {
-  const { inputValues, inputValueHandler, signUpNewUser } = useSignUpInForm();
+  const { inputValues, inputValueHandler, signUpNewUser } =
+    useContext(SignUpInFormContext);
 
   return (
     <form onSubmit={signUpNewUser}>
@@ -33,7 +35,11 @@ export default function SignUpForm() {
         />
       </div>
       <div className="pt-3">
-        <FormButton type="submit" text="Sign up" />
+        <FormButton
+          type="submit"
+          text="Sign up"
+          loading={inputValues.loading}
+        />
         <p
           className={`pt-2 text-center text-sm text-rose-600 ${
             inputValues.errorMessage.length > 0 ? 'block' : 'hidden'

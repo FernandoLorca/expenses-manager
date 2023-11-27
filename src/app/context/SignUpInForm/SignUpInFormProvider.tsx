@@ -1,13 +1,15 @@
 'use client';
 import { createClient } from '@supabase/supabase-js';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useState } from 'react';
 import type { ChildrenContext } from '../types';
+import { useEmailValidation } from '@/app/hooks/useEmailValidation';
 
 interface InputValues {
   email: string;
   password: string;
   repeatedPassword: string;
   errorMessage: string;
+  loading: boolean;
 }
 
 const supabase = createClient(
@@ -15,12 +17,13 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 );
 
-const SignUpInFormContext = createContext({
+export const SignUpInFormContext = createContext({
   inputValues: {
     email: '',
     password: '',
     repeatedPassword: '',
     errorMessage: '',
+    loading: false,
   },
   inputValueHandler: (event: React.ChangeEvent<HTMLInputElement>) => {},
   signInWithEmail: (event: React.FormEvent<HTMLFormElement>) => {},
@@ -33,6 +36,7 @@ export default function SignUpInFormProvider({ children }: ChildrenContext) {
     password: '',
     repeatedPassword: '',
     errorMessage: '',
+    loading: false,
   });
 
   const inputValueHandler = (
@@ -44,33 +48,55 @@ export default function SignUpInFormProvider({ children }: ChildrenContext) {
     });
   };
 
+  const emailValidationMessage = useEmailValidation(inputValues.email);
+
   const signInWithEmail = async (
     event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     event.preventDefault();
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: inputValues.email,
-        password: inputValues.password,
+
+    if (emailValidationMessage !== '') {
+      setInputValues({
+        ...inputValues,
+        errorMessage: emailValidationMessage,
       });
+      return;
+    } else {
+      setInputValues({
+        ...inputValues,
+        errorMessage: '',
+      });
+    }
 
-      if (error) {
-        setInputValues({
-          ...inputValues,
-          errorMessage: error.message,
-        });
-      }
+    setInputValues({
+      ...inputValues,
+      loading: true,
+    });
 
-      if (data.user !== null && data.session !== null && error === null) {
-        setInputValues({
-          email: '',
-          password: '',
-          repeatedPassword: '',
-          errorMessage: '',
-        });
-      }
-    } catch (error) {
-      console.error(error);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: inputValues.email,
+      password: inputValues.password,
+    });
+
+    console.log(data);
+    console.log(error);
+
+    if (error) {
+      setInputValues({
+        ...inputValues,
+        errorMessage: error.message,
+      });
+      return;
+    }
+
+    if (data.user !== null && data.session !== null && error === null) {
+      setInputValues({
+        email: '',
+        password: '',
+        repeatedPassword: '',
+        errorMessage: '',
+        loading: false,
+      });
     }
   };
 
@@ -79,12 +105,23 @@ export default function SignUpInFormProvider({ children }: ChildrenContext) {
   ): Promise<void> => {
     event.preventDefault();
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    if (!emailRegex.test(inputValues.email)) {
+    if (emailValidationMessage !== '') {
       setInputValues({
         ...inputValues,
-        errorMessage: 'Invalid email',
+        errorMessage: emailValidationMessage,
+      });
+      return;
+    } else {
+      setInputValues({
+        ...inputValues,
+        errorMessage: '',
+      });
+    }
+
+    if (inputValues.password === '' || inputValues.repeatedPassword === '') {
+      setInputValues({
+        ...inputValues,
+        errorMessage: 'Password cannot be empty',
       });
       return;
     } else {
@@ -107,30 +144,37 @@ export default function SignUpInFormProvider({ children }: ChildrenContext) {
       });
     }
 
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: inputValues.email,
-        password: inputValues.password,
-        options: {
-          emailRedirectTo: 'http://localhost:3000/expenses',
-        },
-      });
+    setInputValues({
+      ...inputValues,
+      loading: true,
+    });
 
-      if (error) {
-        setInputValues({
-          ...inputValues,
-          errorMessage: error.message,
-        });
-      } else {
-        setInputValues({
-          email: '',
-          password: '',
-          repeatedPassword: '',
-          errorMessage: '',
-        });
-      }
-    } catch (error) {
-      console.error(error);
+    const { data, error } = await supabase.auth.signUp({
+      email: inputValues.email,
+      password: inputValues.password,
+      options: {
+        emailRedirectTo: 'http://localhost:3000/expenses',
+      },
+    });
+
+    console.log(data);
+    console.log(error);
+
+    if (data.user === null && data.session === null) {
+      setInputValues({
+        ...inputValues,
+        errorMessage: "Couldn't sign up",
+        loading: false,
+      });
+      return;
+    } else {
+      setInputValues({
+        email: '',
+        password: '',
+        repeatedPassword: '',
+        errorMessage: '',
+        loading: false,
+      });
     }
   };
 
@@ -142,5 +186,3 @@ export default function SignUpInFormProvider({ children }: ChildrenContext) {
     </SignUpInFormContext.Provider>
   );
 }
-
-export const useSignUpInForm = () => useContext(SignUpInFormContext);
