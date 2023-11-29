@@ -1,6 +1,7 @@
 'use client';
 import { createClient } from '@supabase/supabase-js';
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import type { ChildrenContext } from '../types';
 import { useEmailValidation } from '@/app/hooks/useEmailValidation';
 
@@ -10,6 +11,16 @@ interface InputValues {
   repeatedPassword: string;
   errorMessage: string;
   loading: boolean;
+}
+
+interface Session {
+  session: {
+    access_token: string | undefined;
+    expires_at: number | undefined;
+    expires_in: number | undefined;
+    refresh_token: string | undefined;
+    token_type: string | undefined;
+  };
 }
 
 const supabase = createClient(
@@ -38,6 +49,22 @@ export default function SignUpInFormProvider({ children }: ChildrenContext) {
     errorMessage: '',
     loading: false,
   });
+
+  const [session, setSession] = useState<Session>({
+    session: {
+      access_token: '',
+      expires_at: 0,
+      expires_in: 0,
+      refresh_token: '',
+      token_type: '',
+    },
+  });
+
+  console.log(session);
+
+  const router = useRouter();
+
+  useEffect(() => {}, [session]);
 
   const inputValueHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -73,30 +100,45 @@ export default function SignUpInFormProvider({ children }: ChildrenContext) {
       loading: true,
     });
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: inputValues.email,
-      password: inputValues.password,
-    });
-
-    console.log(data);
-    console.log(error);
-
-    if (error) {
-      setInputValues({
-        ...inputValues,
-        errorMessage: error.message,
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: inputValues.email,
+        password: inputValues.password,
       });
-      return;
-    }
 
-    if (data.user !== null && data.session !== null && error === null) {
-      setInputValues({
-        email: '',
-        password: '',
-        repeatedPassword: '',
-        errorMessage: '',
-        loading: false,
+      setSession({
+        session: {
+          access_token: data?.session?.access_token,
+          expires_at: data?.session?.expires_at,
+          expires_in: data?.session?.expires_in,
+          refresh_token: data?.session?.refresh_token,
+          token_type: data?.session?.token_type,
+        },
       });
+
+      console.log(data);
+      console.log(error);
+
+      if (error) {
+        setInputValues({
+          ...inputValues,
+          errorMessage: error.message,
+        });
+        return;
+      }
+
+      if (data.user !== null && data.session !== null && error === null) {
+        router.push('/expenses');
+        setInputValues({
+          email: '',
+          password: '',
+          repeatedPassword: '',
+          errorMessage: '',
+          loading: false,
+        });
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
