@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Open_Sans } from 'next/font/google';
 import SignUpLogInSelectorProvider from './context/SignInLogInSelector/SignUpLogInSelectorProvider';
-import SignUpInFormProvider from './context/SignUpInForm/SignUpInFormProvider';
 import './globals.css';
 
 const inter = Open_Sans({ subsets: ['latin'] });
@@ -22,11 +21,7 @@ export default function RootLayout({
         className={`${inter.className} bg-gradient-to-b from-[#333] to-[#222] text-white`}
       >
         <div className="px-5">
-          <SignUpInFormProvider>
-            <SignUpLogInSelectorProvider>
-              {children}
-            </SignUpLogInSelectorProvider>
-          </SignUpInFormProvider>
+          <SignUpLogInSelectorProvider>{children}</SignUpLogInSelectorProvider>
         </div>
       </body>
     </html>

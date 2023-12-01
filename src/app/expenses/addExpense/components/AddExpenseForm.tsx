@@ -2,6 +2,7 @@
 import { HiHome } from 'react-icons/hi';
 import { FaBowlFood } from 'react-icons/fa6';
 import { IoMdBicycle } from 'react-icons/io';
+import { useForm } from 'react-hook-form';
 import type { FormSectionsType } from '../types';
 import { useState } from 'react';
 import FormButton from '@/app/LoginComponents/FormButton';
@@ -17,13 +18,34 @@ export default function AddExpenseForm(): JSX.Element {
     addAmount: false,
   });
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   return (
     <form className="flex h-screen items-center justify-center">
       {formSections.addExpense && (
         <div className="flex flex-col">
           <h2 className="text-center text-5xl font-bold">Add expense</h2>
           <div className="py-5">
-            <Input inputType="text" placeholder="Add expense" />
+            <label htmlFor="addExpense" className="sr-only">
+              Add expense
+            </label>
+            <Input
+              inputType="text"
+              placeholder="Add expense"
+              registerFunctionValue="addExpense"
+              registerFunctionOptions={{
+                required: {
+                  value: true,
+                  message: 'This field is required',
+                },
+              }}
+              registerFunctionErrors={errors}
+              registerFunction={register}
+            />
           </div>
           <div className="flex justify-end">
             <DirectionArrows
@@ -68,16 +90,32 @@ export default function AddExpenseForm(): JSX.Element {
         <div className="flex flex-col text-center">
           <h2 className="text-5xl font-bold">Add Amount</h2>
           <div className="py-5">
-            <Input inputType="number" placeholder="Amount" />
+            <label htmlFor="amount" className="sr-only">
+              Amount
+            </label>
+            <Input
+              inputType="number"
+              placeholder="Amount"
+              registerFunctionValue="amount"
+              registerFunctionOptions={{
+                required: {
+                  value: true,
+                  message: 'This field is required',
+                },
+              }}
+              registerFunctionErrors={errors}
+              registerFunction={register}
+            />
           </div>
           <div className="inline-block">
             <FormButton
               text="Add expense"
+              type="submit"
+              loading={false}
               onClick={event => {
                 event.preventDefault();
                 console.log('submit');
               }}
-              type="submit"
             />
           </div>
           <div className="text-6xl">
