@@ -1,45 +1,68 @@
-import { useContext } from 'react';
-import { SignUpInFormContext } from '../context/SignUpInForm/SignUpInFormProvider';
+import { useForm } from 'react-hook-form';
 import FormButton from './FormButton';
 import Input from './Input';
 
 export default function SignInForm() {
-  const { inputValues, inputValueHandler, signInWithEmail } =
-    useContext(SignUpInFormContext);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = handleSubmit(data => {
+    console.log(data);
+  });
 
   return (
-    <form onSubmit={signInWithEmail}>
+    <form onSubmit={onSubmit}>
       <div className="flex flex-col gap-2">
-        <label className="sr-only">Email</label>
+        <label className="sr-only" htmlFor="email">
+          Email
+        </label>
         <Input
           inputType="email"
           placeholder="Email"
-          inputName="email"
-          inputValue={inputValues.email}
-          onChangeEvent={inputValueHandler}
+          registerFunctionValue="email"
+          registerFunctionOptions={{
+            required: {
+              value: true,
+              message: 'This field is required',
+            },
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: 'Please enter a valid email',
+            },
+          }}
+          registerFunctionErrors={errors}
+          registerFunction={register}
         />
-        <label className="sr-only">Password</label>
+        <label className="sr-only" htmlFor="password">
+          Password
+        </label>
         <Input
           inputType="password"
           placeholder="Password"
-          inputName="password"
-          inputValue={inputValues.password}
-          onChangeEvent={inputValueHandler}
+          registerFunctionValue="password"
+          registerFunctionOptions={{
+            required: {
+              value: true,
+              message: 'This field is required',
+            },
+            minLength: {
+              value: 6,
+              message: 'Password must be at least 6 characters long',
+            },
+            maxLength: {
+              value: 20,
+              message: 'Password must be less than 20 characters long',
+            },
+          }}
+          registerFunctionErrors={errors}
+          registerFunction={register}
         />
       </div>
       <div className="pt-3">
-        <FormButton
-          type="submit"
-          text="Sign in"
-          loading={inputValues.loading}
-        />
-        <p
-          className={`pt-2 text-center text-sm text-rose-600 ${
-            inputValues.errorMessage.length > 0 ? 'block' : 'hidden'
-          }`}
-        >
-          {inputValues.errorMessage}
-        </p>
+        <FormButton type="submit" text="Sign in" loading={false} />
       </div>
     </form>
   );
