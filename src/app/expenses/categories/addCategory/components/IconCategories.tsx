@@ -36,7 +36,7 @@ export default function IconCategories() {
       <IconButton
         icon={
           <Image
-            src="/categoryIcons/hihome.svg"
+            src="/categoryIcons/HiHome.svg"
             width={16}
             height={16}
             alt="Home icon"
@@ -48,7 +48,7 @@ export default function IconCategories() {
       <IconButton
         icon={
           <Image
-            src="/categoryIcons/fabowlfood.svg"
+            src="/categoryIcons/FaBowlFood.svg"
             width={16}
             height={16}
             alt="Home icon"
@@ -60,7 +60,7 @@ export default function IconCategories() {
       <IconButton
         icon={
           <Image
-            src="/categoryIcons/iomdbicycle.svg"
+            src="/categoryIcons/IoMdBicycle.svg"
             width={16}
             height={16}
             alt="Home icon"
@@ -72,7 +72,7 @@ export default function IconCategories() {
       <IconButton
         icon={
           <Image
-            src="/categoryIcons/bisolidparty.svg"
+            src="/categoryIcons/BiSolidParty.svg"
             width={16}
             height={16}
             alt="Home icon"
